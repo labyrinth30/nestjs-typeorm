@@ -8,6 +8,11 @@ import {
   VersionColumn,
 } from 'typeorm';
 
+export enum Role {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
 @Entity()
 export class UserModel {
   // ID
@@ -43,9 +48,16 @@ export class UserModel {
     // 아무것도 입력하지 않았을 때 기본값으로 들어감
     default: 'default title',
     // 칼럼중에서 유일한 값이 되어야 하는지
-    unique: true,
+    unique: false,
   })
   title: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.USER,
+  })
+  role: Role;
 
   // 데이터 생성 일자
   // 데이터가 생성되는 날짜와 시간이 자동으로 찍힌다.
