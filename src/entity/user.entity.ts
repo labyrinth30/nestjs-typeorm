@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
+import { ProfileModel } from './profile.entity';
 
 export enum Role {
   ADMIN = 'admin',
@@ -26,31 +28,8 @@ export class UserModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // 제목
-  @Column({
-    // 데이터베이스에서 인지하는 칼럼 타입
-    // 자동으로 유추됨.
-    type: 'varchar',
-    // 칼럼 이름
-    // 프로퍼티 이름과 같은 이름으로 설정됨.
-    name: 'title',
-    // 입력할 수 있는 값의 길이
-    length: 100,
-    // null 허용 여부
-    nullable: true,
-    // true면 처음에 저장할 때만 값 지정 가능
-    // 이후에는 값 변경 불가능
-    update: false,
-    // find()할 때 기본으로 값을 불러오는지
-    // 기본값은 true
-    select: false,
-    // 기본값
-    // 아무것도 입력하지 않았을 때 기본값으로 들어감
-    default: 'default title',
-    // 칼럼중에서 유일한 값이 되어야 하는지
-    unique: false,
-  })
-  title: string;
+  @Column()
+  email: string;
 
   @Column({
     type: 'enum',
@@ -79,4 +58,7 @@ export class UserModel {
   @Column()
   @Generated('uuid')
   additionalId: string;
+
+  @OneToOne(() => ProfileModel, (profile) => profile.user)
+  profile: ProfileModel;
 }
