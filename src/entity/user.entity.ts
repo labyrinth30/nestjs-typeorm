@@ -3,12 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
 import { ProfileModel } from './profile.entity';
+import { PostModel } from './post.entity';
 
 export enum Role {
   ADMIN = 'admin',
@@ -51,7 +53,7 @@ export class UserModel {
   // Version
   // 데이터가 업데이트 될 때마다 1씩 올라간다.
   // 처음 생성되는 값은 1이다.
-  // save()가 몇 번 불렸는지 기억한다.ㄴ
+  // save()가 몇 번 불렸는지 기억한다.
   @VersionColumn()
   version: number;
 
@@ -61,4 +63,7 @@ export class UserModel {
 
   @OneToOne(() => ProfileModel, (profile) => profile.user)
   profile: ProfileModel;
+
+  @OneToMany(() => PostModel, (post) => post.author)
+  posts: PostModel[];
 }
