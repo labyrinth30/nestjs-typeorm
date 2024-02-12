@@ -78,6 +78,88 @@ export class AppController {
     });
   }
 
+  @Post('sample')
+  async sample() {
+    // 모델에 해당되는 객체 생성 - 저장은 안함
+    // const user1: UserModel = this.userRepository.create({
+    //   email: 'test@gmail.com',
+    // });
+    // 생성 + 저장
+    // const user2: UserModel = await this.userRepository.save({
+    //   email: 'test1@gmail.com',
+    // });
+    // return user2;
+    // preload
+    // 입력된 값을 기반으로 데이터베이스에 있는 데이터를 불러오고
+    // 추가 입력된 값으로 데이터베이스에서 가져온 값들을 대체함.
+    // 저장하지는 않음
+    // const user3 = await this.userRepository.preload({
+    //   id: 101,
+    //   email: 'younha@naver.com',
+    // });
+    // 삭제하기
+    // await this.userRepository.delete({
+    //   id: 101,
+    // });
+    // increment
+    // 조건에 해당되는 Row의 프로퍼티를 증가시킬 수 있다.
+    // await this.userRepository.increment(
+    //   {
+    //     id: 1,
+    //   },
+    //   'count',
+    //   2,
+    // );
+    // decrement
+    // 조건에 해당되는 Row의 프로퍼티를 감소시킬 수 있다.
+    // await this.userRepository.decrement(
+    //   {
+    //     id: 1,
+    //   },
+    //   'count',
+    //   1,
+    // );
+    // 갯수 카운팅하기
+    // const count = await this.userRepository.count({
+    //   where: {
+    //     email: ILike('%0%'),
+    //   },
+    // });
+    // sum
+    // const sum = await this.userRepository.sum('count', {
+    //   email: ILike('%2%'),
+    // });
+    // average
+    // const average = await this.userRepository.average('count', {
+    //   id: LessThan(4),
+    // });
+
+    // min
+    // const min = await this.userRepository.minimum('count', {
+    //   id: LessThan(4),
+    // });
+    //
+    // max
+    // const max = await this.userRepository.maximum('count', {
+    //   id: LessThan(4),
+    // });
+
+    // findOne
+    // const user1 = await this.userRepository.findOne({
+    //   where: {
+    //     id: 1,
+    //   },
+    // });
+
+    // findAndCounts
+    // 반환값의 두 번째는 값의 개수
+    const usersAndCount = await this.userRepository.findAndCount({
+      take: 3,
+    });
+
+    return usersAndCount;
+  }
+
   @Post('users')
   postUsers() {
     for (let i = 0; i < 100; i++) {
