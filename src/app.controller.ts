@@ -22,61 +22,69 @@ export class AppController {
   @Get('users')
   getUsers() {
     return this.userRepository.find({
+      where: {
+        // Not => id가 1이 아닌 것을 찾는다.
+        // id: Not(1),
+        // 적거나 같거나 큰 경우 가져오기
+        // id: LessThan(20),
+        // id: LessThanOrEqual(20),
+        // id: MoreThan(20),
+        // id: MoreThanOrEqual(20),
+        // id: Equal(1),
+        // 유사값
+        // 대문자와 소문자 구분 안 하는 유사값
+        // email: Like('%gmail%'),
+        // email: ILike('%GMAIL%'),
+        // 사이값
+        // id: Between(1, 20),
+        // 해당되는 여러개의 값
+        // id: In([1, 2, 3, 6]),
+        // Null 값인 경우 가져오기
+        // id: IsNull(),
+      },
+
       // 어떤 프로퍼티를 가져올지 선택할 수 있다.
       // 기본값은 모든 프로퍼티를 가져온다.
       // 만약에 select 옵션을 사용하지 않으면 모든 프로퍼티를 가져온다.
-      select: {
-        id: true,
-        email: true,
-        createdAt: false,
-        version: true,
-        profile: {
-          id: true,
-        },
-      },
+      // select: {
+      //   id: true,
+      //   email: true,
+      //   createdAt: false,
+      //   version: true,
+      //   profile: {
+      //     id: true,
+      //   },
+      // },
       // where 옵션은 조건을 걸 수 있다.
       // email이 'younha0012@gmail'인 데이터를 찾는다.
       // 만약 빈 객체를 넣으면 모든 데이터를 가져온다.
       // 그냥 쉼표로 구분하면 and 조건이를.
       // or 조건을 사용하고 싶다면 리스트를 사용한다.
-      where: [
-        {
-          id: 3,
-        },
-        {
-          version: 1,
-        },
-        {
-          profile: {
-            profileImg: 'test.img',
-          },
-        },
-      ],
+
       // 관계를 가져오는 법
-      relations: {
-        profile: true,
-      },
+      // relations: {
+      //   profile: true,
+      // },
       // 오름차순 내림차순
       // 'ASC' | 'DESC'
       order: {
-        id: 'DESC',
-        profile: {
-          id: 'ASC',
-        },
+        id: 'ASC',
       },
       // skip은 처음 몇 개를 제외하고 가져올지
-      skip: 0,
+      // skip: 0,
       // take는 몇 개를 가져올지
       // 기본값은 0, 전체를 가져온다.
-      take: 2,
+      // take: 2,
     });
   }
 
   @Post('users')
   postUsers() {
-    return this.userRepository.save({
-      email: 'test123@naver.com',
-    });
+    for (let i = 0; i < 100; i++) {
+      this.userRepository.save({
+        email: `user-${i}@gmail.com`,
+      });
+    }
   }
 
   @Patch('users/:id')
