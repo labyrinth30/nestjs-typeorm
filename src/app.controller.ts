@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserModel } from './entity/user.entity';
@@ -22,16 +22,61 @@ export class AppController {
   @Get('users')
   getUsers() {
     return this.userRepository.find({
+      // 어떤 프로퍼티를 가져올지 선택할 수 있다.
+      // 기본값은 모든 프로퍼티를 가져온다.
+      // 만약에 select 옵션을 사용하지 않으면 모든 프로퍼티를 가져온다.
+      select: {
+        id: true,
+        email: true,
+        createdAt: false,
+        version: true,
+        profile: {
+          id: true,
+        },
+      },
+      // where 옵션은 조건을 걸 수 있다.
+      // email이 'younha0012@gmail'인 데이터를 찾는다.
+      // 만약 빈 객체를 넣으면 모든 데이터를 가져온다.
+      // 그냥 쉼표로 구분하면 and 조건이를.
+      // or 조건을 사용하고 싶다면 리스트를 사용한다.
+      where: [
+        {
+          id: 3,
+        },
+        {
+          version: 1,
+        },
+        {
+          profile: {
+            profileImg: 'test.img',
+          },
+        },
+      ],
+      // 관계를 가져오는 법
       relations: {
         profile: true,
-        posts: true,
       },
+      // 오름차순 내림차순
+      // 'ASC' | 'DESC'
+      order: {
+        id: 'DESC',
+        profile: {
+          id: 'ASC',
+        },
+      },
+      // skip은 처음 몇 개를 제외하고 가져올지
+      skip: 0,
+      // take는 몇 개를 가져올지
+      // 기본값은 0, 전체를 가져온다.
+      take: 2,
     });
   }
 
   @Post('users')
   postUsers() {
-    return this.userRepository.save({});
+    return this.userRepository.save({
+      email: 'test123@naver.com',
+    });
   }
 
   @Patch('users/:id')
@@ -43,18 +88,27 @@ export class AppController {
     });
     return this.userRepository.save({
       ...user,
+      email: user.email + '0',
     });
+  }
+
+  @Delete('user/profile/:id')
+  async deleteProfile(@Param('id') id: string) {
+    await this.profileRepository.delete(+id);
   }
 
   @Post('user/profile')
   async createUserAndProfile() {
     const user = await this.userRepository.save({
-      email: 'younha00@gmail.com',
+      email: 'younha0012@gmail.com',
+      profile: {
+        profileImg: 'test1.img',
+      },
     });
-    const profile = await this.profileRepository.save({
-      profileImg: 'test.img',
-      user,
-    });
+    // const profile = await this.profileRepository.save({
+    //   profileImg: 'test.img',
+    //   user,
+    // });
     return user;
   }
 
@@ -91,7 +145,7 @@ export class AppController {
       name: 'Flutter',
       posts: [post1],
     });
-    const post3 = await this.postRepository.save({
+    await this.postRepository.save({
       title: 'Flutter 강의',
       tags: [tag1, tag2],
     });
